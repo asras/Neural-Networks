@@ -1,0 +1,122 @@
+\documentclass[12pt]{article}
+\usepackage{fullpage}
+\usepackage{latexsym}
+%\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage[danish,english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[ampersand]{easylist}
+\usepackage{caption}
+%%\usepackage{subcaption}
+\usepackage{epstopdf}
+\usepackage[format=hang,font=small]{caption} 	% Pretty captions
+\usepackage{wrapfig} 
+\usepackage{lscape}
+\usepackage{subfig}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{bbold}
+\numberwithin{equation}{section}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\avg}[1]{\left< #1 \right>}
+\newcommand{\ket}[1]{\left| #1 \right\rangle}
+\newcommand{\bra}[1]{\langle\left. #1 \right|}
+\newcommand{\dprod}[2]{\langle #1 | #2 \rangle}
+\newcommand{\Ohat}{\hat{\mathcal{O}}}
+\newcommand{\fv}[1]{\mathbf{#1}}
+\newcommand{\fp}{\mathbf{P}}
+\newcommand{\pdif}[1]{\frac{\partial}{\partial #1}}
+\newcommand{\rdif}[1]{\frac{d}{d #1}}
+\newcommand{\cop}{c_{\uparrow}^{\phantom{\dagger}}}
+\newcommand{\copd}{c_\uparrow^{\dagger}}
+\newcommand{\cdown}{c_{\downarrow}^{\phantom{\dagger}}}
+\newcommand{\cdownd}{c_\downarrow^\dagger}
+\newcommand{\rref}[1]{(\ref{#1})}
+\renewcommand{\v}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\newcommand{\gv}[1]{\ensuremath{\mbox{\boldmath$ #1 $}}} % for vectors of Greek letter
+\newcommand{\dint}[1]{\, \mathrm{d }#1}
+\newcommand{\dintc}[1]{\mathrm{d} #1 \,} % For beautiful integration variable declaration such as dx
+\newcommand{\sgn}{\mathrm{sgn}}
+\newcommand{\matr}[1]{\underline{\underline{#1}}}
+\newcommand{\A}{\mathcal{A}}
+\usepackage{ulem}
+\begin{document}
+\section{Introduction}
+This is a brief overview of the basic theory of neural networks. It's written for my own sake and for the purpose of implementing a neural network in python, so it will be quick and dirty. 
+\\
+A neural network is basically a type of function that be can used to approximate a very general set of functions. They have been used for image recognition, chat bots, data analysis and much more. 
+
+\section{Definition of a Neural Network}
+A NN consists of a series of layers. Each layer performs a linear transformation on the input data followed by applying a non-linear function to each element of the output data. The linear transformation typically increases the dimension of the data in the intermediate layers (to allow extraction of different features). The non-linear function is usually called an activation function. It is essential that the activation function is non-linear, as otherwise the NN would just be equivalent to a single linear transformation which is not very useful in general. The output/activation functions/something of the intermediate layers are called neurons. The activation function at the final layer is sometimes called the output function and is typically/always tailored to the problem at hand. For example, for fitting problems one chooses the identity (which is not linear, but that's OK w/ respect to the mathematical properties of the NN since it's only at one layer), while for binary classication problems one would choose the logistic sigmoid function
+\begin{align}
+f(x) = \frac{1}{1+\exp(-x)}.
+\end{align}
+One typically chooses the same activation function for each layer and each element but this is not essential.
+The choice of output function is partially determined by the problem at hand, and by interpreting the output of the NN in a probabilistic manner one finds a natural error function: minus the log likelihood. One trains the network by attempting to maximize the probability of the training data or equivalently by minimizing the error. One typically chooses output functions that have the nice property that
+\begin{align}
+\frac{\partial E}{\partial x_N} = y-t,
+\end{align}
+where \(E\) is the error function, \(x_N\) is the output of the final layer prior to activation, \(y\) is the output of the NN (final layer after activation) and \(t\) is the training data. It is not essential but certainly looks nice.
+
+Summarizing all this, we write an \(n\)-layered neural network as a function \(NN : \mathbb{R}^n \rightarrow \mathbb{R}^m\):
+\begin{align}
+NN(x_0)& = y = O(x_n) = O(L_nA(x_{n-1})) = O(L_nA(L_{n-1}A(x_{n-2}))) = ... \nonumber \\
+& = O(L_nA(L_{n-1}A(...A(L_1x_0))),
+\end{align}
+here \(O\) is the output function, \(L_k\) is the linear transformation at the \(k\)th layer, \(A\) is the activation function, \(x_k\) is the 'data' at the \(k\)th neuron/in the \(k\)th layer prior to activation and \(x_0\) is the input data.
+
+For shits and giggles we can represent a neural graphically like so:
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{NNFig.pdf}
+\caption{}
+\end{figure}
+The blue dots or maybe blue dots + blue box are the neurons. The lines represent the linear transformations. The red dot is the input and the red box is the output.
+
+\section{Training the neural network}
+The matrix elements on the linear transformations \(L_k\) are to be optimized to minimize the error function. This is done via a training set which contains input data and 'correct' output data. We will just describe gradient descent which calculates the gradient \(\nabla_w E\) where \(w\) is some matrix element of one of the linear transformations and \(w\) is updated at each step according to
+\begin{align}
+w \rightarrow w - \eta \nabla_w E.
+\end{align}
+\(\eta\) is called the learning rate and is typically small. There are also algorithms where the learning rate changes according to some criteria. Here we consider 'on-line training' which just means that at each training step we pick some element in training set \((x,t)\), calculate the gradient of the error function calculated with this training element, update the weight and then move on to some other training element (perhaps picked at random). 
+
+We can calculate the gradient using the chain rule. This is called backpropagation in the neural network literature. It is evidently computationally cheaper to use 'backpropagation' rather than calculating the gradient numerically. We just do it because we're badass. 
+
+We start at the output neuron and use the fact we have chosen the 'canonical' output function (also known as the canonical link). Let \(w^n\) be the matrix of \(L_n\) and \(w^n_{ij}\) the element at the \(i\)th row and \(j\)th column.  
+\begin{align}
+\frac{\partial E}{\partial w_{ij}^n} =  \frac{\partial E}{\partial x^n_i}\frac{\partial x^n_i}{\partial w^n_{ij}} = \frac{\partial E}{\partial x^n_i}z^{n-1}_j.
+\end{align}
+Here \(x^k_h\) is the \(h\)th element of the data at the \(k\)th layer prior to activation and \(z^k_h\) is the \(h\)th element of the data at the \(k\)th layer after activation. For the canonical link
+\begin{align}
+\frac{\partial E}{\partial x^n_i} = y_i-t_i,
+\end{align}
+as mentioned. This fact is probably the main reason why we started by expressing the derivate with respect to \(w_{ij}\) as a derivate with respect to \(x\) instead. Below we will see that we find a recursive relationship between the derivates with respect to \(x\) at one layer and the derivates at the next layer. This will allows to calculate the gradients easily.
+
+For a weight at an arbitrary layer we have
+\begin{align}
+\frac{\partial E}{\partial w_{ij}^k} &=  \frac{\partial E}{\partial x^k_i}z^{k-1}_j = \frac{\partial E}{\partial z^k_i}\frac{\partial z^k_i}{\partial x_i^k} z^{k-1}_j = \sum_h \frac{\partial E}{\partial x^{k+1}_h}\frac{\partial x^{k+1}_h}{\partial z^k_i}\frac{\partial z^k_i}{\partial x_i^k} z^{k-1}_j \nonumber \\
+&= \sum_h \frac{\partial E}{\partial x^{k+1}_h}w^{k+1}_{hi}\frac{\partial z^k_i}{\partial x_i^k} z^{k-1}_j
+\end{align}
+The essential point is
+\begin{align}
+ \frac{\partial E}{\partial x^k_i} = \sum_h \frac{\partial E}{\partial x^{k+1}_h}w^{k+1}_{hi}\frac{\partial z^k_i}{\partial x_i^k}.
+\end{align}
+We apply this formula until we reach the final layer at which point we know that \(\frac{\partial E}{\partial x^n_i} = y_i - t_i\). Let us write the complete expression
+\begin{align}
+\frac{\partial E}{\partial w^k_{ij}} =  (y_v-t_v)w_{vc}^nA'(x_c^{n-1})...A'(x_g^{k+2})w^{k+2}_{gh}A'(x_h^{k+1})w^{k+1}_{hi}A'(x_i^{k})z_j^{k-1}.
+\end{align}
+All indices except \(i,j\) are summed over.
+
+Because of the recursive structure it should be easy to write a function to calculate the gradient.
+
+
+\section{Conclusion}
+That should be all we need for now. Obviously everything can be generalized and complicated and there are also different implementations that are better at other stuff. There's plenty more to do.
+
+
+\end{document}
