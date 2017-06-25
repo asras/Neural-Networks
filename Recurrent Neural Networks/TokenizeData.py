@@ -73,4 +73,5 @@ with open(filename, 'w', newline='', encoding='utf-8') as f:
 	writer = csv.writer(f)
 	for j, sent in enumerate(tokenized_sentences):
 		writer.writerow(tokenized_sentences[j])
+np.savez('wordtofromindex.txt', wtoi = word_to_index, itow = index_to_word)
 

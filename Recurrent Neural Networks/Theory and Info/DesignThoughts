@@ -1,0 +1,37 @@
+
+
+
+Design for modular RNN
+
+Basic RNNs and LSTMs are similar at a top level since both take a sequence of inputs, perform operations on this data, and finally outputs something to the next layer and the same layer at the next timestep. We want to design the system so that this "black box" can be switched out at will.
+
+
+Input of dimension Di --> Black box 1 --> Black box 2 ... --> Output
+								|				|
+Input of dimension Di --> Black box 1 --> Black box 2 ... --> Output
+
+
+Any black box must take as parameters to its constructor the dimension of its input variable and the dimension of its output variable. In addition, we also need parameters needed for the internal operations. 
+
+The black boxes should be Theano functions so we can use the following pattern
+
+
+x_k = z_k^1 (input vector at timestep k)
+
+z_k^j+1 = BlackBoxj(z_k^j)
+
+o_k = OutputFunction(Wz_k^jlast)
+
+
+How information is passed from timestep to timestep (i.e. vertically in above drawing) is hidden from us; it could be a RNN or a LSTM or anything else we conjure up.
+
+To train the network we need to take the derivate of a cost function (which obviously also needs to be a Theano function) with respect to the parameters of the black boxes. Since their internal workings are hidden from us, they need to implement a training function that takes a cost function as input and updates the internal parameters. In principle we might like to implement different types of parameter optimization. To do this we could either implement it at the level of the black box, or we could return a function and modify the (Theano) updates variable. 
+
+
+We also want be able to implement batch updates, cf.  http://www.wildml.com/2015/10/recurrent-neural-network-tutorial-part-4-implementing-a-grulstm-rnn-with-python-and-theano/.
+
+
+
+
+
+

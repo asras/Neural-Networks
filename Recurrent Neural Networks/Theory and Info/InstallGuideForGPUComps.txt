@@ -1,0 +1,34 @@
+Issue in pygpu git that may help with missing package
+https://github.com/Theano/libgpuarray/issues/172
+
+
+Theano needs proper configs. Type os.expanduser('~/.theanorc.txt') in python to get the path to the 
+config file. If .theanorc.txt is not there, create it and paste
+
+[global]
+floatX = float32
+device = opencl/gpu/cuda
+
+gpu/cuda is for NVIDIA devices.
+
+
+http://deeplearning.net/software/libgpuarray/installation.html
+
+A guide for NVIDIA:
+https://github.com/Lasagne/Lasagne/wiki/From-Zero-to-Lasagne-on-Windows-7-%2864-bit%29#nvidia-gpu-support-cuda
+
+https://stackoverflow.com/questions/33687103/how-to-install-theano-on-anaconda-python-2-7-x64-on-windows
+
+A guide to get necessary packages:
+https://www.ibm.com/developerworks/community/blogs/jfp/entry/Installing_PyOpenCl_On_Anaconda_For_Windows?lang=en
+
+The OpenCL package:
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyopencl
+
+
+A package you may need:
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#pytools
+
+
+
+You also have to install an OpenCL driver for your CPU.

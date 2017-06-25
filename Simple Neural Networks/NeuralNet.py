@@ -200,61 +200,153 @@ class NeuralNetwork(object):
 
 
 
-##Setup training data
-NumberOfTrainingPts = 20
-DataRange = 10
-TrainingData = []
-ErrorMagnitude = 0.1
-maxX = -10*DataRange
-minX = 10*DataRange
-def trainfunc(x):
-	return 0.1*x**2
-for j in range(0, NumberOfTrainingPts):
-	#x = np.matrix(np.random.random()*(DataRange-1))
-	x = np.matrix([[j/NumberOfTrainingPts*DataRange]])
-	if (x < minX):
-		minX = x
-	if (x > maxX):
-		maxX = x
-	y = np.matrix((trainfunc(x)+(np.random.random()-0.5)*2*ErrorMagnitude))
-	TrainingData.append([x,y])
-
-for j in range(0, len(TrainingData)):
-	plt.plot(TrainingData[j][0], TrainingData[j][1], 'k.')
-
-plt.plot([trainfunc(j) for j in range(math.floor(minX), math.ceil(maxX)+1)], 'k')
 
 
-NeuralNet = NeuralNetwork(_listOfDims=[1,100, 20, 1])
-NeuralNet.TrainingRate = 0.01/10
-#NeuralNet.PrintGradients()
+def TrainToFitFunction():
+	##Setup training data
+	NumberOfTrainingPts = 20
+	DataRange = 10
+	TrainingData = []
+	ErrorMagnitude = 0.1
+	maxX = -10*DataRange
+	minX = 10*DataRange
+	def trainfunc(x):
+		#return 0.1*x**2
+		return np.sqrt(x)
+	for j in range(0, NumberOfTrainingPts):
+		#x = np.matrix(np.random.random()*(DataRange-1))
+		x = np.matrix([[j/NumberOfTrainingPts*DataRange]])
+		if (x < minX):
+			minX = x
+		if (x > maxX):
+			maxX = x
+		y = np.matrix((trainfunc(x)+(np.random.random()-0.5)*2*ErrorMagnitude))
+		TrainingData.append([x,y])
+
+	for j in range(0, len(TrainingData)):
+		plt.plot(TrainingData[j][0], TrainingData[j][1], 'k.')
+
+	plt.plot([trainfunc(j) for j in range(math.floor(minX), math.ceil(maxX)+1)], 'k')
 
 
-print('TRAINING STARTED')
-
-NumberOfTrainingCycles = 2000
-for j in range(0, NumberOfTrainingCycles):
-	#print(notusedindex)
-	#print(notusedindex % 200 == 0)
-	NeuralNet.Train(TrainingData, j % NumberOfTrainingPts)
-
-	#if ((j % 200) == 0):
-		#NeuralNet.PrintGradients()
-
-print('Final error is ', NeuralNet.ErrorFunction(TrainingData))
-print('-'*50)
-print(NeuralNet.Layers)
-#print(NeuralNet.FeedForward(3))
-#print([np.asscalar(NeuralNet.FeedForward(j)) for j in range(0, DataRange)])
-plt.plot([np.asscalar(NeuralNet.FeedForward(np.matrix([[j]]))) for j in range(0, DataRange)], 'r')
+	NeuralNet = NeuralNetwork(_listOfDims=[1,200, 1])
+	NeuralNet.TrainingRate = 0.01/10
+	#NeuralNet.PrintGradients()
 
 
+	print('TRAINING STARTED')
 
-#print('-'*50)
-#print(NeuralNet.Layers)
-#print('-'*50)
+	NumberOfTrainingCycles = 400
+	for j in range(0, NumberOfTrainingCycles):
+		#print(notusedindex)
+		#print(notusedindex % 200 == 0)
+		NeuralNet.Train(TrainingData, j % NumberOfTrainingPts)
 
-plt.show()
+		#if ((j % 200) == 0):
+			#NeuralNet.PrintGradients()
+
+	print('Training complete.')
+	print('Final error is ', NeuralNet.ErrorFunction(TrainingData))
+	print('-'*50)
+	#print(NeuralNet.Layers)
+	#print(NeuralNet.FeedForward(3))
+	#print([np.asscalar(NeuralNet.FeedForward(j)) for j in range(0, DataRange)])
+	plt.plot([np.asscalar(NeuralNet.FeedForward(np.matrix([[j]]))) for j in range(0, DataRange)], 'r')
+
+
+
+	#print('-'*50)
+	#print(NeuralNet.Layers)
+	#print('-'*50)
+
+	plt.show()
+
+
+
+
+
+
+def TrainToClassify():
+	##Set up training data
+	NumOfPtsInClass = 100
+
+	## Class 1: Gaussian with mean 0,0 and STD 1
+	data1x = []
+	data1y = []
+	datatrain = []
+	for j in range(0,NumOfPtsInClass):
+		x = np.random.normal()
+		y = np.random.normal()
+		data1x.append(x)
+		data1y.append(y)
+		datatrain.append([np.matrix([[x],[y]]), 0])
+
+
+	## Class 2: Gaussian with mean 3,3 and STD 0.5
+	data2x = []
+	data2y = []
+	for j in range(0,NumOfPtsInClass):
+		x = np.random.normal(3, 0.5)
+		y = np.random.normal(3,0.5)
+		data2x.append(x)
+		data2y.append(y)
+		datatrain.append([np.matrix([[x],[y]]), 1])
+
+
+	plt.scatter(data1x, data1y, color='red')
+	plt.scatter(data2x, data2y, color='blue')
+	plt.show()
+
+	ClassifierNet = NeuralNetwork([2, 50, 1])
+
+	NumberOfTrainingCycles = 2000
+	for j in range(0,NumberOfTrainingCycles):
+		ClassifierNet.Train(datatrain, j % (2*NumOfPtsInClass))
+
+
+	print('Training completed.')
+	print('Plotting the nets classification of the data.')
+	##Set up plot
+	##Red dots are classified as class 0
+	##Blue dots are classified as class 1
+	for j in range(0,NumOfPtsInClass):
+		outputClass1 = ClassifierNet.FeedForward(datatrain[j][0])[0,0]		
+		if round(outputClass1) == 0:
+			plt.scatter(data1x[j], data1y[j], color='red')
+		else:
+			plt.scatter(data1x[j], data1y[j], color='blue')
+		outputClass2 = ClassifierNet.FeedForward(datatrain[NumOfPtsInClass+j][0])[0,0]
+		if round(outputClass2) == 0:
+			plt.scatter(data2x[j], data2y[j], color='red')
+		else:
+			plt.scatter(data2x[j], data2y[j], color='blue')
+
+	plt.show()
+
+
+
+##Have to overwrite these to get classifying net to work... should rewrite NN class
+
+def Classify():
+	def CanonicalLink(x):
+	##print(type(x))
+	##a = np.dot(x,x)
+		return 1/(1+np.exp(-x))
+
+	def ErrorFunction(actual, target):
+		xEntropy = -target*np.log(actual)+(1-target)*np.log(1-actual)
+		return xEntropy[0,0]
+	TrainToClassify()
+
+
+if __name__ == '__main__':
+	Classify()
+	##TrainToFitFunction()
+
+
+
+
+##TODO RUN THIS CODE
 
 
 
