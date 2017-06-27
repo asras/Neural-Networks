@@ -2,7 +2,7 @@ Issue in pygpu git that may help with missing package
 https://github.com/Theano/libgpuarray/issues/172
 
 
-Theano needs proper configs. Type os.expanduser('~/.theanorc.txt') in python to get the path to the 
+Theano needs proper configs. Type os.path.expanduser('~/.theanorc.txt') in python to get the path to the 
 config file. If .theanorc.txt is not there, create it and paste
 
 [global]

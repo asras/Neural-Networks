@@ -3,7 +3,7 @@ import theano
 import numpy as np
 import csv
 import time #Time is money
-
+from tools import *
 
 
 
@@ -40,7 +40,6 @@ class RNN(object):
 		 outputs_info=[None, dict(initial=np.zeros(hiddenDim))], strict=True,
 		 truncate_gradient = self.bptt_truncate)
 
-		print('test')
 		# def batchff(v):
 		# 	[o,s], updates = theano.scan(ff, sequences=v,  non_sequences=[U, V, W],
 		# 	 outputs_info=[None, dict(initial=np.zeros(hiddenDim))], strict=True,
@@ -50,7 +49,6 @@ class RNN(object):
 		#BatchO is a 3-tensor
 		#[BatchO, trash], updatestrash = theano.scan(batchff, sequences=Q)
 
-		print('test2')
 		y = T.ivector('y')
 		Error = T.sum(T.nnet.categorical_crossentropy(O, y)) ##This works because y is one-hot encoding
 		#Y = T.imatrix()
@@ -71,7 +69,7 @@ class RNN(object):
 		self.CalcError = theano.function([x,y], Error)
 
 
-		LR = T.scalar('LearningRate')
+		LR = T.dscalar()
 		self.SGTrain = theano.function([x,y, LR], [],
 			updates=[(U, U - LR*dU),
 						(V, V - LR*dV),
@@ -103,21 +101,26 @@ if __name__ == '__main__':
 	Y_train = np.asarray([[word_to_index[w] for w in sent[1:]] for sent in sentences])
 
 	##Make network
+	t1 = time.time()
 	NN = RNN(word_dim, word_dim)
-
-
+	t2 = time.time()
+	print('Build took ' + str(t2-t1) + ' seconds.')
+	load_model_parameters('savedparameters.npz', NN)
 	##Train
 
 	###Print error before
-	print('Error before training: ', NN.calculate_total_loss(X_train, Y_train))
+	#print('Error before training: ', NN.calculate_total_loss(X_train, Y_train))
 	###SG training
+	numberoftrains = 1000
+	indices = [np.random.randint(len(X_train)) for j in range(0, numberoftrains)]
+	print('Training commenced.')
 	t1 = time.time()
-	for j in np.arange(10):
-		NN.SGTrain(X_train[j], Y_train[j], 0.01)
+	for j in np.arange(numberoftrains):
+		NN.SGTrain(X_train[indices[j]], Y_train[indices[j]], 0.01)
 	t2 = time.time()
 	print('Training took: ' + str(t2-t1) + ' seconds.')
-	print('Error after training: ', NN.calculate_total_loss(X_train, Y_train))
-	###Print error after
-
+	#print('Error after training: ', NN.calculate_total_loss(X_train, Y_train))
+	###Print error aft
+	save_model_parameters('savedparameters', NN)
 
 	##Generate sentences

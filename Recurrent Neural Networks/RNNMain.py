@@ -2,6 +2,7 @@ import theano
 import theano.tensor as T
 from BasicRNNModule import HiddenLayer as HL
 import numpy as np
+import time
 
 
 
@@ -36,7 +37,10 @@ print(atestinput)
 print('##'*30)
 print(feedforward(atestinput))
 print('##'*30)
+t1 = time.time()
 print('Error before training: ', funccostfunct(atestinput, atesttarget))
 TrainItAll(atestinput, atesttarget, 100)
+t2 = time.time()
 print('Error after training: ', funccostfunct(atestinput, atesttarget))
+print('Training took ' + str(t2-t1) + ' seconds.')
 
