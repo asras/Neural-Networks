@@ -83,6 +83,38 @@ class RNN(object):
 	def calculate_total_loss(self, X, Y):
 		return np.sum([self.CalcError(x,y) for x,y in zip(X,Y)])
 
+	def GenerateSentence(self, word_to_index, index_to_word):
+		wordsinsent = [word_to_index['SENTENCE_START']]
+		while True:
+			worddist = self.FeedForward(wordsinsent)
+			chosenWord = self.ChooseWord(worddist[-1], word_to_index, index_to_word)
+			wordsinsent.append(chosenWord)
+			if (chosenWord == word_to_index['SENTENCE_END']):
+				break
+		
+		convertedSent = [index_to_word[ind] for ind in wordsinsent]
+		return convertedSent
+
+	def ChooseWord(self, distribution, word_to_index, index_to_word):
+		wordchosen = 0
+		distribution = list(distribution)
+		del distribution[word_to_index['SENTENCE_START']]
+		del distribution[word_to_index['UNKOWN_TOKEN']-1]
+		distribution = distribution/np.sum(distribution)
+		randvar = np.random.random()
+		runningsum = 0
+		for j in np.arange(len(distribution)):
+			runningsum += distribution[j]
+			if (randvar < runningsum):
+				wordchosen = j
+				break;
+			
+		if (wordchosen == 7998):
+			wordchosen = 8000
+		else:
+			wordchosen += 1
+		return wordchosen
+
 
 
 
@@ -111,18 +143,34 @@ if __name__ == '__main__':
 	###Print error before
 	#print('Error before training: ', NN.calculate_total_loss(X_train, Y_train))
 	###SG training
-	numberoftrains = 10
+	
 	if (len(sys.argv) > 1):
-		numberoftrains = int(sys.argv[1])
-	indices = [np.random.randint(len(X_train)) for j in range(0, numberoftrains)]
-	print('Training commenced.')
-	t1 = time.time()
-	for j in np.arange(numberoftrains):
-		NN.SGTrain(X_train[indices[j]], Y_train[indices[j]], 0.01)
-	t2 = time.time()
-	print('Training took: ' + str(t2-t1) + ' seconds.')
-	#print('Error after training: ', NN.calculate_total_loss(X_train, Y_train))
-	###Print error aft
-	save_model_parameters('savedparameters', NN)
+		if (sys.argv[1].lower() == 'train'):
+			if (sys.argv[2] != None):
+				numberoftrains = sys.argv[2]
+			else:
+				numberoftrains = 1000
+			if (sys.argv[3] != None):
+				learningrate = sys.argv[3]
+			else:
+				learningrate = 0.01
+
+			indices = [np.random.randint(len(X_train)) for j in range(0, numberoftrains)]
+			print('Training commenced.')
+			t1 = time.time()
+			for j in np.arange(numberoftrains):
+				NN.SGTrain(X_train[indices[j]], Y_train[indices[j]], learningrate)
+			t2 = time.time()
+			print('Training took: ' + str(t2-t1) + ' seconds.')
+			#print('Error after training: ', NN.calculate_total_loss(X_train, Y_train))
+			###Print error aft
+			save_model_parameters('savedparameters', NN)
+
+		elif (sys.argv[1].lower() == 'speak'):
+			for j in np.arange(5):
+				sentence = NN.GenerateSentence(word_to_index, index_to_word)
+				print(' '.join(sentence[1:-1]))
+
 
 	##Generate sentences
+	##Test WildML's speed
