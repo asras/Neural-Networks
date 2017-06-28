@@ -4,7 +4,7 @@ import numpy as np
 import csv
 import time #Time is money
 from tools import *
-
+import sys
 
 
 
@@ -111,7 +111,9 @@ if __name__ == '__main__':
 	###Print error before
 	#print('Error before training: ', NN.calculate_total_loss(X_train, Y_train))
 	###SG training
-	numberoftrains = 1000
+	numberoftrains = 10
+	if (len(sys.argv) > 1):
+		numberoftrains = int(sys.argv[1])
 	indices = [np.random.randint(len(X_train)) for j in range(0, numberoftrains)]
 	print('Training commenced.')
 	t1 = time.time()
