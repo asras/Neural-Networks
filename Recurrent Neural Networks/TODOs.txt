@@ -1,3 +1,9 @@
 Batch training
-Sentence generation function
-Test training on GPU
+Get GPU Support/Test training on GPU
+Test WildML speed
+LSTM
+
+
+
+
+Sentence generation function - done

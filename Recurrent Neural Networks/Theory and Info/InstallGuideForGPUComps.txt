@@ -32,3 +32,11 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#pytools
 
 
 You also have to install an OpenCL driver for your CPU.
+
+
+
+
+
+Install CMAKE
+Get Libgpuarray from git
+http://deeplearning.net/software/libgpuarray/installation.html
