@@ -147,11 +147,11 @@ if __name__ == '__main__':
 	if (len(sys.argv) > 1):
 		if (sys.argv[1].lower() == 'train'):
 			if (sys.argv[2] != None):
-				numberoftrains = sys.argv[2]
+				numberoftrains = int(sys.argv[2])
 			else:
 				numberoftrains = 1000
 			if (sys.argv[3] != None):
-				learningrate = sys.argv[3]
+				learningrate = float(sys.argv[3])
 			else:
 				learningrate = 0.01
 
