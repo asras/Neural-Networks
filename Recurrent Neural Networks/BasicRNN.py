@@ -5,7 +5,7 @@ import csv
 import time #Time is money
 from tools import *
 import sys
-
+import datetime
 
 
 class RNN(object):
@@ -98,8 +98,10 @@ class RNN(object):
 	def ChooseWord(self, distribution, word_to_index, index_to_word):
 		wordchosen = 0
 		distribution = list(distribution)
+		indofstar = word_to_index['*']
 		del distribution[word_to_index['SENTENCE_START']]
-		del distribution[word_to_index['UNKOWN_TOKEN']-1]
+		del distribution[indofstar-1]
+		del distribution[word_to_index['UNKOWN_TOKEN']-2]
 		distribution = distribution/np.sum(distribution)
 		randvar = np.random.random()
 		runningsum = 0
@@ -111,6 +113,8 @@ class RNN(object):
 			
 		if (wordchosen == 7998):
 			wordchosen = 8000
+		elif (wordchosen > indofstar-2):
+			wordchosen += 2
 		else:
 			wordchosen += 1
 		return wordchosen
@@ -119,6 +123,8 @@ class RNN(object):
 
 
 if __name__ == '__main__':
+	t = datetime.datetime.now().time()
+	print('Program started at ', t)
 	##Load training data
 	filename = 'testsave.csv'
 	with open(filename, 'r', newline='', encoding='utf-8') as f:
