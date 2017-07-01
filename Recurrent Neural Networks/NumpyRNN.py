@@ -107,6 +107,28 @@ class NumpyRNN():
 		self.V += -learningRate*dV
 
 
+	##Batch training - I'll keep the above for testing and reference even though
+	##it will never be used on account of being so slow
+	def FeedForwardForBatchGradient(self, X, time):
+		U, W, V = self.U, self.W, self.V
+		#X is matrix of encoded one-hot, e.g. [[0, 19, 222, 1290, 1], [0, 19, 222, 13, 1]]
+		X = [[EncOHToOnehot(w) for w in s] for s in X]
+		X = np.array(X).T
+		o = []
+		s = [np.array([np.zeros(self.hiddenDim)]*len(X)).T]
+		acts = []
+		for j in np.arange(time+1):			
+			act = U.dot(X[:, j]) + W.dot(s[j])
+			st = np.tanh(act)
+			acts.append(act)
+			s.append(st)
+			o.append(Softmax(V.dot(st)))
+		#This function returns matrices where each column corresponds to
+		#output/hiddenstate/activation at timestep t
+		return [np.array(o[-1]), np.array(s[-1]), np.array(acts[-1])]
+
+
+
 
 
 
