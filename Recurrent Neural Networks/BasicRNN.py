@@ -63,31 +63,32 @@ class RNN(object):
 
 
 		##Batch training
+		##For some reason batch training is about 10x slower than regular training
 
 		#Loop over rows in matrix and calculate summed error
 		#Calculate gradients
 		#Update weights
-		def Error(xt,yt):
-			[o, _], _ = theano.scan(ff, sequences=xt, non_sequences=[U, V, W],
-		 outputs_info=[None, dict(initial=np.zeros(hiddenDim))], strict=True,
-		 truncate_gradient = self.bptt_truncate)
-			error = T.sum(T.nnet.categorical_crossentropy(o,yt))
-			return [error, yt]
+		# def Error(xt,yt):
+		# 	[o, _], _ = theano.scan(ff, sequences=xt, non_sequences=[U, V, W],
+		#  outputs_info=[None, dict(initial=np.zeros(hiddenDim))], strict=True,
+		#  truncate_gradient = self.bptt_truncate)
+		# 	error = T.sum(T.nnet.categorical_crossentropy(o,yt))
+		# 	return [error, yt]
 
-		XBatch = T.imatrix()
-		YBatch = T.imatrix()
-		[bErrorVec, _], _ = theano.scan(Error, sequences=[XBatch, YBatch],
-			outputs_info=[None, None])
+		# XBatch = T.imatrix()
+		# YBatch = T.imatrix()
+		# [bErrorVec, _], _ = theano.scan(Error, sequences=[XBatch, YBatch],
+		# 	outputs_info=[None, None])
 
-		bError = T.sum(bErrorVec)
-		BdU = T.grad(bError,U)
-		BdV = T.grad(bError,V)
-		BdW = T.grad(bError,W)
-		BLR = T.dscalar()
-		self.BatchSGTrain = theano.function([XBatch, YBatch, BLR], [],
-			updates=[(U, U - BLR*BdU),
-						(V, V - BLR*BdV),
-						(W, W - BLR*BdW)])
+		# bError = T.sum(bErrorVec)
+		# BdU = T.grad(bError,U)
+		# BdV = T.grad(bError,V)
+		# BdW = T.grad(bError,W)
+		# BLR = T.dscalar()
+		# self.BatchSGTrain = theano.function([XBatch, YBatch, BLR], [],
+		# 	updates=[(U, U - BLR*BdU),
+		# 				(V, V - BLR*BdV),
+		# 				(W, W - BLR*BdW)])
 
 
 	def calculate_total_loss(self, X, Y):
@@ -186,37 +187,45 @@ if __name__ == '__main__':
 			for j in np.arange(5):
 				sentence = NN.GenerateSentence(word_to_index, index_to_word)
 				print(' '.join(sentence[1:-1]))
-
-		elif (sys.argv[1].lower() == 'batchtrain'):
+		elif (sys.argv[1].lower() == "calcerror"):
 			if (sys.argv[2] != None):
 				numberoftrains = int(sys.argv[2])
 			else:
 				numberoftrains = 1000
-			if (sys.argv[3] != None):
-				learningrate = float(sys.argv[3])
-			else:
-				learningrate = 0.01
-			#Pick sentences to train on
 			indices = [np.random.randint(len(X_train)) for j in range(0, numberoftrains)]
-			preBatchX = [X_train[index] for index in indices]
-			preBatchY = [Y_train[index] for index in indices]
-			print(len(preBatchY))
-			print(type(preBatchX))
-			#Find max length and pad the short sentences with 'SENTENCE_END' tokens
-			maxLen = max([len(sent) for sent in X_train])
-			BatchX = [preBatchX[j] + [word_to_index['SENTENCE_END']]*(maxLen-len(preBatchX[j]))
-				for j in range(0, len(preBatchX))]
-			BatchY = [preBatchY[j] + [word_to_index['SENTENCE_END']]*(maxLen-len(preBatchY[j]))
-				for j in range(0, len(preBatchY))]
-			BatchX = np.asarray(BatchX)
-			BatchY = np.asarray(BatchY)
-			##TODO Sanity check
-			print('Batch training commenced.')
-			t1 = time.time()
-			NN.BatchSGTrain(BatchX, BatchY, learningrate)
-			t2 = time.time()
-			print('Training took: ' + str(t2-t1) + ' seconds.')
-			save_model_parameters('savedparameters', NN)
+			BatchX = [X_train[index] for index in indices]
+			BatchY = [Y_train[index] for index in indices]
+			print(NN.calculate_total_loss(BatchX, BatchY))
+	timeend = datetime.datetime.now().time()
+	print('Program terminated at ', timeend)
+		# elif (sys.argv[1].lower() == 'batchtrain'):
+		# 	if (sys.argv[2] != None):
+		# 		numberoftrains = int(sys.argv[2])
+		# 	else:
+		# 		numberoftrains = 1000
+		# 	if (sys.argv[3] != None):
+		# 		learningrate = float(sys.argv[3])
+		# 	else:
+		# 		learningrate = 0.01
+		# 	#Pick sentences to train on
+		# 	indices = [np.random.randint(len(X_train)) for j in range(0, numberoftrains)]
+		# 	preBatchX = [X_train[index] for index in indices]
+		# 	preBatchY = [Y_train[index] for index in indices]
+		# 	#Find max length and pad the short sentences with 'SENTENCE_END' tokens
+		# 	maxLen = max([len(sent) for sent in X_train])
+		# 	BatchX = [preBatchX[j] + [word_to_index['SENTENCE_END']]*(maxLen-len(preBatchX[j]))
+		# 		for j in range(0, len(preBatchX))]
+		# 	BatchY = [preBatchY[j] + [word_to_index['SENTENCE_END']]*(maxLen-len(preBatchY[j]))
+		# 		for j in range(0, len(preBatchY))]
+		# 	#BatchX = np.asarray(BatchX)
+		# 	#BatchY = np.asarray(BatchY)
+		# 	##TODO Sanity check
+		# 	print('Batch training commenced.')
+		# 	t1 = time.time()
+		# 	NN.BatchSGTrain(BatchX, BatchY, learningrate)
+		# 	t2 = time.time()
+		# 	print('Training took: ' + str(t2-t1) + ' seconds.')
+		# 	save_model_parameters('savedparameters', NN)
 
 
 

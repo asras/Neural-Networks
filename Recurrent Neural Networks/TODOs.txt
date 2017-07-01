@@ -1,9 +1,16 @@
-Batch training
-Get GPU Support/Test training on GPU
-Test WildML speed
-LSTM
+LSTM speedup, LSTM is way too slow: 14 secs for training on 10 sentences.
+I tried setting a few flags and running the theano function profiler
+but nothing popped out. The last thing I'll try before giving up on
+theano is to switch U[:, xt] -> U.dot(xt), i.e. use one-hots instead of
+index-vectors.
+
+Clean up data more and train on clean data
+Try with smaller vocabulary
 
 
 
-
+LSTM - done, but see above
+Test WildML speed - done, just as slow
+Get GPU Support/Test training on GPU - not done, but given up on
 Sentence generation function - done
+Batch training - done, was 10x slower for some reason
