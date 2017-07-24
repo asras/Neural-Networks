@@ -17,7 +17,7 @@
 using namespace std;
 
 
-RNN::RNN() //overriden default constructor. Similar to initializer in python
+RNN::RNN() //overriden default constructor. Similar to initializer in python, jaja
 {	
 	const int bptt_truncate = 4;
 	const int inputDim = 10;
@@ -36,8 +36,8 @@ RNN::RNN() //overriden default constructor. Similar to initializer in python
 	for (int i = 0; i < hiddenDim; i++) {
 		for (int j = 0; j < inputDim; j++) {
 			U[i][j] = distributionU(generator);
-			V[i][j] = distributionV(generator);
-		}	W[i][j] = distributionW(generator);
+			V[i][j] = distributionV(generator);//TODO Second index should not run from 0 to inputDim-1
+		}	W[i][j] = distributionW(generator); //TODO Second index should not run from 0 to inputDim-1
 	}
 }
 
