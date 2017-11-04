@@ -184,7 +184,11 @@ if __name__ == '__main__':
 			save_model_parameters('savedparameters', NN)
 
 		elif (sys.argv[1].lower() == 'speak'):
-			for j in np.arange(5):
+			numOfSents = 5
+			if (len(sys.argv) > 2):
+				if sys.argv[2] != None:
+					numOfSents = int(sys.argv[2])
+			for j in np.arange(numOfSents):
 				sentence = NN.GenerateSentence(word_to_index, index_to_word)
 				print(' '.join(sentence[1:-1]))
 		elif (sys.argv[1].lower() == "calcerror"):
