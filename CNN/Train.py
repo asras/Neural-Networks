@@ -38,8 +38,7 @@ batch_size = n_training_samples
 
 
 batch = np.zeros([batch_size, 28, 28, 1]) #last index is number of color channels
-random_indices = np.random.choice(range(n_training_samples),
- batch_size, replace=False)
+random_indices = range(n_training_samples)
 
 X_batch = np.array([df.ix[ind].values.reshape([28,28,1]) for ind in random_indices])
 y_targets = np.array([df_labels.ix[ind] for ind in random_indices])
