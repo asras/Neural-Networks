@@ -1,12 +1,9 @@
-import pickle
 import pandas as pd
-from PIL import Image
 import numpy as np
-import matplotlib.pyplot as plt
 import tensorflow as tf
 from CNN import CNN
 import time
-#	df = pd.read_csv("sp500_joined_closes.csv")
+
 df = pd.read_csv("fashion-mnist_train0.csv")
 df.drop(["Unnamed: 0"], 1, inplace = True)
 df_labels = df["label"]
@@ -38,13 +35,3 @@ print("Training completed. Duration: {}. Final loss: {}.".format(t2-t1, loss))
 
 aCNN.save_model(sess)
 
-#print(df.head())
-#print(df.ix[0][:10])
-
-# for j in range(5):
-# 	imarray = np.zeros((28,28))
-# 	im1 = df.ix[j]
-# 	im1 = np.reshape(im1, (28,28))	
-# 	plt.imshow(im1, cmap="gray", interpolation="none")
-# 	plt.savefig("imtest{}.png".format(j))
-# 	plt.clf()
