@@ -113,21 +113,7 @@ class CNN:
 			units=10,
 			name = "logits")
 
-		# predictions = {
-		# "classes" : tf.argmax(input=logits, axis=1),
-		# "probabilities" : tf.nn.softmax(logits, name="softmax_tensor")
-		# }
-
-		# if mode == tf.estimator.ModeKeys.PREDICT:
-		# 	return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
-
-		# onehot_labels = tf.one_hot(indices=tf.cast(labels, tf.int32), depth=10)
-		# loss = tf.losses.softmax_cross_entropy(
-		# 	onehot_labels=onehot_labels, logits=logits)
-
-		# if mode == tf.estimator.ModeKeys
-
-
+		
 	def _build_loss(self):
 		self.target_labels = tf.placeholder(tf.int32, [None], name = "target_labels")
 		onehot_labels = tf.one_hot(indices=self.target_labels, depth = 10, 
