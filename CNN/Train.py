@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from CNN import CNN
+import sys
 import time
 ##TODO This really needs cleanup
 def get_train_data():
@@ -14,8 +15,11 @@ def get_train_data():
 		
 	y_targets_array = [df_labels.ix[ind] for ind in range(len(df_labels.index))]
 		
-
-	for j in range(1,4):
+	if len(sys.argv) > 1:
+		extra_samples_to_use = int(sys.argv[1])
+	else:
+		extra_samples_to_use = 1
+	for j in range(1,extra_samples_to_use+1):
 		df = pd.read_csv("fashion-mnist_train{}.csv".format(j))
 		df.drop(["Unnamed: 0"], 1, inplace = True)
 		df_labels = df["label"]
