@@ -150,6 +150,21 @@ class CNN:
 		loss = sess.run([self.loss], feed_dict)
 		return loss
 
+	def calculate_accuracy(self, sess, X, y_target):
+		softmax_pred = tf.nn.softmax(self.logits)
+		feed_dict = {self.input_layer : X}
+
+		probs = sess.run([softmax_pred], feed_dict)
+
+		predictions = [np.argmax(prob) for prob in probs]
+
+		correct_predictions = [1 if predictions[j] == y_target[j] \
+			else 0 for j in range(len(predictions))]
+
+		accuracy = np.sum(correct_predictions)/len(predictions)
+		return accuracy
+
+
 
 	def save_model(self, sess):
 		saver = tf.train.Saver()

@@ -5,31 +5,21 @@ from CNN import CNN
 import sys
 import time
 ##TODO This really needs cleanup
-def get_train_data():
+def get_train_data(number_of_samples):
+	set_to_use = np.random.randint(4)
 
-	df = pd.read_csv("fashion-mnist_train0.csv")
+	df = pd.read_csv("fashion-mnist_train{}.csv".format(set_to_use))
 	df.drop(["Unnamed: 0"], 1, inplace = True)
 	df_labels = df["label"]
 	df.drop(["label"], 1, inplace=True)
-	X_array = [df.ix[ind].values.reshape([28,28,1]) for ind in range(len(df.index))]
+	n_training_samples = np.min([len(df.index), number_of_samples])
+	indices = np.random.choice(range(len(df.index)), n_training_samples,
+		replace = False)
+
+	X_array = np.array([df.ix[ind].values.reshape([28,28,1]) for ind in indices])
 		
-	y_targets_array = [df_labels.ix[ind] for ind in range(len(df_labels.index))]
-		
-	if len(sys.argv) > 1:
-		extra_samples_to_use = int(sys.argv[1])
-	else:
-		extra_samples_to_use = 1
-	for j in range(1,extra_samples_to_use+1):
-		df = pd.read_csv("fashion-mnist_train{}.csv".format(j))
-		df.drop(["Unnamed: 0"], 1, inplace = True)
-		df_labels = df["label"]
-		df.drop(["label"], 1, inplace=True)
-		X_tmp = [df.ix[ind].values.reshape([28,28,1]) for ind in range(len(df.index))]
-		
-		y_targets_tmp = [df_labels.ix[ind] for ind in range(len(df_labels.index))]
-		
-		X_array = X_array + X_tmp
-		y_targets_array = y_targets_array + y_targets_tmp
+	y_targets_array = np.array([df_labels.ix[ind] for ind in indices])
+	
 	return np.array(X_array), np.array(y_targets_array)
 
 def get_validation_data():
@@ -44,9 +34,17 @@ def get_validation_data():
 	return np.array(X_array), np.array(y_targets_array)
 
 
+if len(sys.argv) > 1:
+	try:
+		number_of_samples = int(sys.argv[1])
+	except:
+		print("Faulty input. Using default value.")
+		number_of_samples = 10
+else:
+	number_of_samples = 10
 
-
-X_batch, y_targets = get_train_data()
+print("Training on {} samples.".format(number_of_samples))
+X_batch, y_targets = get_train_data(number_of_samples)
 
 
 sess = tf.Session() ##TODO Should we close session? Google it
@@ -67,11 +65,14 @@ aCNN.save_model(sess)
 
 X_batch_validation, y_targets_validation = get_validation_data()
 
-loss_val = aCNN.calculate_loss(sess, X_batch_validation, y_targets_validation)
+loss_val = aCNN.calculate_loss(sess, X_batch_validation, y_targets_validation)[0]
 print("Loss on validation set: {}.".format(loss_val))
+accuracy = aCNN.calculate_accuracy(sess, X_batch_validation, y_targets_validation)
+print("Accuracy on validation set: {}".format(accuracy))
 
 
 
 
 
 
+##TODO percentage correct
