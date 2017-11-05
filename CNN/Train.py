@@ -4,6 +4,30 @@ import tensorflow as tf
 from CNN import CNN
 import time
 ##TODO This really needs cleanup
+def get_train_data():
+	df = pd.read_csv("fashion-mnist_train0.csv")
+	df.drop(["Unnamed: 0"], 1, inplace = True)
+	df_labels = df["label"]
+	df.drop(["label"], 1, inplace=True)
+
+	for j in range(1,4):
+		df1 = pd.read_csv("fashion-mnist_train{}.csv".format(j))
+		df1.drop(["Unnamed: 0"], 1, inplace = True)
+		df_labels1 = df["label"]
+		df1.drop(["label"], 1, inplace=True)
+		df = df.append(df1)
+		df_labels = df_labels.append(df_labels1)
+	return df, df_labels
+
+def get_validation_data():
+	df = pd.read_csv("fashion-mnist_train4.csv")
+	df.drop(["Unnamed: 0"], 1, inplace = True)
+	df_labels = df["label"]
+	df.drop(["label"], 1, inplace=True)
+	return df, df_labels
+
+
+
 
 df, df_labels = get_train_data()
 
@@ -44,24 +68,3 @@ aCNN.save_model(sess)
 
 
 
-def get_train_data():
-	df = pd.read_csv("fashion-mnist_train0.csv")
-	df.drop(["Unnamed: 0"], 1, inplace = True)
-	df_labels = df["label"]
-	df.drop(["label"], 1, inplace=True)
-
-	for j in range(1,4):
-		df1 = pd.read_csv("fashion-mnist_train{}.csv".format(j))
-		df1.drop(["Unnamed: 0"], 1, inplace = True)
-		df_labels1 = df["label"]
-		df1.drop(["label"], 1, inplace=True)
-		df = df.append(df1)
-		df_labels = df_labels.append(df_labels1)
-	return df, df_labels
-
-def get_validation_data():
-	df = pd.read_csv("fashion-mnist_train4.csv")
-	df.drop(["Unnamed: 0"], 1, inplace = True)
-	df_labels = df["label"]
-	df.drop(["label"], 1, inplace=True)
-	return df, df_labels
