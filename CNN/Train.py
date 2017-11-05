@@ -50,7 +50,7 @@ X_batch, y_targets = get_train_data(number_of_samples)
 
 
 sess = tf.Session() ##TODO Should we close session? Google it
-print("Training on {} samples.".format(number_of_samples))
+print("Training on {} samples.".format(len(y_targets)))
 print("Building model.")
 t1 = time.time()
 aCNN = CNN(sess=sess)
@@ -65,8 +65,9 @@ print("Training completed. Duration: {}. Final loss: {}.".format(t2-t1, loss))
 aCNN.save_model(sess)
 
 
-print("Validating on {} samples.".format(number_of_samples))
+
 X_batch_validation, y_targets_validation = get_validation_data(number_of_samples)
+print("Validating on {} samples.".format(len(y_targets_validation)))
 
 loss_val = aCNN.calculate_loss(sess, X_batch_validation, y_targets_validation)[0]
 print("Loss on validation set: {}.".format(loss_val))
@@ -77,5 +78,3 @@ print("Accuracy on validation set: {}".format(accuracy))
 
 
 
-
-##TODO percentage correct

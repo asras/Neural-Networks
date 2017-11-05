@@ -1,3 +1,10 @@
+Try adding possible to choose to run several batches.
+	Maybe AWS can handle that better.
+Submit to Kaggle?? Dont even know if competition is still running.
+
+
+
+
+DONE
 Train on 40k examples.
 Validate on 10k examples.
-Submit to Kaggle?? Dont even know if competition is still running.
