@@ -154,7 +154,9 @@ class CNN:
 		softmax_pred = tf.nn.softmax(self.logits)
 		feed_dict = {self.input_layer : X}
 
-		probs = sess.run([softmax_pred], feed_dict)
+		probs = sess.run([softmax_pred], feed_dict)[0]
+		probs = probs
+		
 
 		predictions = [np.argmax(prob) for prob in probs]
 
