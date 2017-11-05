@@ -144,6 +144,12 @@ class CNN:
 		self.train_mode = False
 		return loss
 
+	def calculate_loss(self, sess, X, y_target):
+
+		feed_dict = {self.input_layer : X, self.target_labels: y_target}
+		loss = sess.run([self.loss], feed_dict)
+		return loss
+
 
 	def save_model(self, sess):
 		saver = tf.train.Saver()
