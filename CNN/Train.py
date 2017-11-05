@@ -22,7 +22,7 @@ random_indices = np.random.choice(range(n_training_samples),
 
 X_batch = np.array([df.ix[ind].values.reshape([28,28,1]) for ind in random_indices])
 y_targets = np.array([df_labels.ix[ind] for ind in random_indices])
-sess = tf.Session()
+sess = tf.Session() ##TODO Should we close session? Google it
 print("Building model.")
 t1 = time.time()
 aCNN = CNN(sess=sess)

@@ -8,6 +8,8 @@ import os
 ###2. Define the loss
 ###3. Define the training operations
 
+##Remember to name layers to enable saving and restoring of model parameters
+
 class CNN:
 
 	def __init__(self, sess=None, save_path = "./model/model.ckpt"):
@@ -75,7 +77,10 @@ class CNN:
 			activation = tf.nn.relu,
 			name = "conv12")
 
-		pool1 = tf.layers.max_pooling2d(inputs=conv12, pool_size=[2,2], strides=2,
+		pool1 = tf.layers.max_pooling2d(
+			inputs=conv12,
+			pool_size=[2,2],
+			strides=2,
 			name = "pool1")
 
 		conv2 = tf.layers.conv2d(
@@ -86,18 +91,27 @@ class CNN:
 			activation = tf.nn.relu,
 			name = "conv2")
 
-		pool2 = tf.layers.max_pooling2d(inputs=conv2, pool_size=[2,2], strides=2,
+		pool2 = tf.layers.max_pooling2d(inputs=conv2,
+			pool_size=[2,2],
+			strides=2,
 			name = "pool2")
 
-		#Two times pooling to get 7 x 7 and 64 filters to get 7*7*64 vars
+		#Two times pooling to get 7 x 7 and 64 filters to get 7*7*64 variables
 		pool2_flat = tf.reshape(pool2, [-1, 7*7*64], name = "pool2_flat")
 
 		dense = tf.layers.dense(inputs=pool2_flat,
-		 units=1024, activation=tf.nn.relu, name = "dense")
-		dropout = tf.layers.dropout(inputs = dense, rate = 0.4,
-			training = self.train_mode, name = "dropout")
+		 	units=1024,
+		 	activation=tf.nn.relu,
+		 	name = "dense")
 
-		self.logits = tf.layers.dense(inputs=dropout, units=10, name = "logits")
+		dropout = tf.layers.dropout(inputs = dense,
+			rate = 0.4,
+			training = self.train_mode,
+			name = "dropout")
+
+		self.logits = tf.layers.dense(inputs=dropout,
+			units=10,
+			name = "logits")
 
 		# predictions = {
 		# "classes" : tf.argmax(input=logits, axis=1),
