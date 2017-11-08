@@ -72,6 +72,7 @@ for j in range(number_of_batches):
 	print("Starting batch {}/{}".format(j+1, number_of_batches), end="\r")
 	loss = aCNN.train(sess, X_batch, y_targets)
 
+print("Finished batch {}/{}".format(number_of_batches))
 t3 = time.time()
 print("Training completed. Duration: {}. Final loss: {}.".format(t3-t0, loss))
 aCNN.save_model(sess)
