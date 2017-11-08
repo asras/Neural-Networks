@@ -39,34 +39,50 @@ def get_validation_data(number_of_samples):
 
 if len(sys.argv) > 1:
 	try:
-		number_of_samples = int(sys.argv[1])
+		number_of_batches = int(sys.argv[1])
+	except:
+		print("Faulty input. Using default value.")
+		number_of_batches = 1
+else:
+	number_of_batches = 1
+
+
+if len(sys.argv) > 2:
+	try:
+		number_of_samples = int(sys.argv[2])
 	except:
 		print("Faulty input. Using default value.")
 		number_of_samples = 10
 else:
 	number_of_samples = 10
 
-X_batch, y_targets = get_train_data(number_of_samples)
 
-
+print("Performing training on {} batches of size {}.".format(number_of_batches, number_of_samples))
 sess = tf.Session() ##TODO Should we close session? Google it
-print("Training on {} samples.".format(number_of_samples))
 print("Building model.")
 t1 = time.time()
 aCNN = CNN(sess=sess)
 t2 = time.time()
 print("Build took {} seconds.".format(t2-t1))
-
 print("Beginning training.")
-t1 = time.time()
-loss = aCNN.train(sess, X_batch, y_targets)
-t2 = time.time()
-print("Training completed. Duration: {}. Final loss: {}.".format(t2-t1, loss))
+t0 = time.time()
+for j in range(number_of_batches):
+
+	X_batch, y_targets = get_train_data(number_of_samples)
+	print("Starting batch {}/{}".format(j+1, number_of_batches))
+	t1 = time.time()
+	loss = aCNN.train(sess, X_batch, y_targets)
+	t2 = time.time()
+	print("Batch completed. Duration: {}. Loss: {}".format(t2-t1, loss))
+
+t3 = time.time()
+print("Training completed. Duration: {}. Final loss: {}.".format(t3-t0, loss))
 aCNN.save_model(sess)
 
 
-print("Validating on {} samples.".format(number_of_samples))
+
 X_batch_validation, y_targets_validation = get_validation_data(number_of_samples)
+print("Validating on {} samples.".format(len(y_targets_validation)))
 
 loss_val = aCNN.calculate_loss(sess, X_batch_validation, y_targets_validation)[0]
 print("Loss on validation set: {}.".format(loss_val))
@@ -77,5 +93,3 @@ print("Accuracy on validation set: {}".format(accuracy))
 
 
 
-
-##TODO percentage correct
