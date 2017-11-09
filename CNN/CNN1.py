@@ -114,7 +114,7 @@ class CNN1:
 			onehot_labels = onehot_labels, logits = self.logits)
 
 	def _build_train_op(self):
-		optimizer = tf.train.AdamOptimizer(learning_rate = 0.001)
+		optimizer = tf.train.GradientDescentOptimizer(learning_rate = 0.001)
 		#Optimizers vary their parameters based on number of batches seen
 		#/global_step which is why we provide it
 		self.train_op = optimizer.minimize(

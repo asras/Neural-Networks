@@ -62,7 +62,7 @@ print("Performing training on {} batches of size {}.".format(number_of_batches, 
 sess = tf.Session() ##TODO Should we close session? Google it
 print("Building model.")
 t1 = time.time()
-
+#aCNN = ""
 if (sys.argv[1].lower() == "cnn1"):
 	aCNN = CNN1(sess=sess)
 else:
