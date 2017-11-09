@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from CNN import CNN
+from CNN1 import CNN1
 import sys
 import time
 ##TODO This really needs cleanup
@@ -37,9 +38,9 @@ def get_validation_data(number_of_samples):
 	return np.array(X_array), np.array(y_targets_array)
 
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 2:
 	try:
-		number_of_batches = int(sys.argv[1])
+		number_of_batches = int(sys.argv[2])
 	except:
 		print("Faulty input. Using default value.")
 		number_of_batches = 1
@@ -47,9 +48,9 @@ else:
 	number_of_batches = 1
 
 
-if len(sys.argv) > 2:
+if len(sys.argv) > 3:
 	try:
-		number_of_samples = int(sys.argv[2])
+		number_of_samples = int(sys.argv[3])
 	except:
 		print("Faulty input. Using default value.")
 		number_of_samples = 10
@@ -61,7 +62,11 @@ print("Performing training on {} batches of size {}.".format(number_of_batches, 
 sess = tf.Session() ##TODO Should we close session? Google it
 print("Building model.")
 t1 = time.time()
-aCNN = CNN(sess=sess)
+
+if (sys.argv[1].lower() == "cnn1"):
+	aCNN = CNN1(sess=sess)
+else:
+	aCNN = CNN(sess=sess)
 t2 = time.time()
 print("Build took {} seconds.".format(t2-t1))
 print("Beginning training.")

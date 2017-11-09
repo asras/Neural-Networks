@@ -1,5 +1,9 @@
-Try adding possible to choose to run several batches.
-	Maybe AWS can handle that better.
+Experiment with hyperparameters:
+	Learning rate
+	Network structure
+	Optimization algorithm
+	??
+Try using the architectures on MNIST data
 Submit to Kaggle?? Dont even know if competition is still running.
 
 
@@ -8,3 +12,5 @@ Submit to Kaggle?? Dont even know if competition is still running.
 DONE
 Train on 40k examples.
 Validate on 10k examples.
+Try adding possible to choose to run several batches.
+	Maybe AWS can handle that better.
