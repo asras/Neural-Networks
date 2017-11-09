@@ -3,7 +3,10 @@ Experiment with hyperparameters:
 	Network structure
 	Optimization algorithm
 	??
-Try using the architectures on MNIST data
+Try using the architectures on MNIST data 
+	- Are the archs bad or is the problem just harder than
+		regular MNIST?
+Try using the same archs but with Adam
 Submit to Kaggle?? Dont even know if competition is still running.
 
 
