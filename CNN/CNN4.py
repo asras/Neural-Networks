@@ -12,7 +12,7 @@ import os
 
 class CNN4:
 
-	def __init__(self, sess=None, save_path = "./model/model.ckpt"):
+	def __init__(self, sess=None, save_path = "./model/model4.ckpt"):
 		#train_mode is needed for the dropout layer to tell it when to
 		#use dropout
 		self.train_mode = False 

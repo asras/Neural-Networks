@@ -43,7 +43,7 @@ elif (len(sys.argv) > 1 and sys.argv[1].lower() == "cnn2"):
 elif (len(sys.argv) > 1 and sys.argv[1].lower() == "cnn3"):
 	aCNN = CNN3(sess=sess, save_path = "./model/mnistmodel3.ckpt")
 elif (len(sys.argv) > 1 and sys.argv[1].lower() == "cnn4"):
-	aCNN = CNN3(sess=sess, save_path = "./model/mnistmodel4.ckpt")
+	aCNN = CNN4(sess=sess, save_path = "./model/mnistmodel4.ckpt")
 else:
 	aCNN = CNN(sess=sess, save_path = "./model/mnistmodel.ckpt")
 t2 = time.time()
