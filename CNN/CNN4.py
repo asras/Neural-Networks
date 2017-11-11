@@ -20,7 +20,7 @@ class CNN4:
 		self._get_model(sess)
 		self._build_loss()
 		self._build_train_op()
-		self._init_model()
+		self._init_model(sess)
 
 
 
