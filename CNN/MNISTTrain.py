@@ -4,7 +4,7 @@ import tensorflow as tf
 from CNN import CNN
 from CNN1 import CNN1
 from CNN2 import CNN2
-from CNN3 import import CNN3
+from CNN3 import CNN3
 import sys
 import time
 from tensorflow.examples.tutorials.mnist import input_data
