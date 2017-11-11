@@ -13,7 +13,7 @@ df_train = pd.read_csv("fashion-mnist_train{}.csv".format(0))
 for j in range(1,4):
 	df_train = df_train.append(pd.read_csv("fashion-mnist_train{}.csv".format(j)))
 df_train.drop(["Unnamed: 0"], 1, inplace=True)
-df_labels = df["label"]
+df_labels = df_train["label"]
 df_train.drop(["label"], 1, inplace=True)
 
 def get_train_data(number_of_samples):
