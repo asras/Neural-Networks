@@ -11,8 +11,10 @@ import time
 ##TODO This really needs cleanup
 df_train = pd.read_csv("fashion-mnist_train{}.csv".format(0))
 for j in range(1,4):
-	df_train = df_train.append(pd.read_csv("fashion-mnist_train{}.csv".format(j)))
-df_train.drop(["Unnamed: 0"], 1, inplace=True)
+	df_temp = pd.read_csv("fashion-mnist_train{}.csv".format(j))
+	df_temp["Unnamed: 0"] += 1
+	df_train = df_train.append(df_temp)
+df_train.set_index(["Unnamed: 0"], 1, inplace=True)
 df_labels = df_train["label"]
 df_train.drop(["label"], 1, inplace=True)
 
