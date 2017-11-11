@@ -9,22 +9,30 @@ from CNN4 import CNN4
 import sys
 import time
 ##TODO This really needs cleanup
-def get_train_data(number_of_samples):
-	set_to_use = np.random.randint(4)
+df_train = pd.read_csv("fashion-mnist_train{}.csv".format(0))
+for j in range(1,4):
+	df_train = df_train.append(pd.read_csv("fashion-mnist_train{}.csv".format(j)))
+df_train.drop(["Unnamed: 0"], 1, inplace=True)
+df_labels = df["label"]
+df_train.drop(["label"], 1, inplace=True)
 
-	df = pd.read_csv("fashion-mnist_train{}.csv".format(set_to_use))
-	df.drop(["Unnamed: 0"], 1, inplace = True)
-	df_labels = df["label"]
-	df.drop(["label"], 1, inplace=True)
-	n_training_samples = np.min([len(df.index), number_of_samples])
-	indices = np.random.choice(range(len(df.index)), n_training_samples,
+def get_train_data(number_of_samples):
+	# set_to_use = np.random.randint(4)
+
+	# df = pd.read_csv("fashion-mnist_train{}.csv".format(set_to_use))
+	# df.drop(["Unnamed: 0"], 1, inplace = True)
+	# df_labels = df["label"]
+	# df.drop(["label"], 1, inplace=True)
+	n_training_samples = np.min([len(df_train.index), number_of_samples])
+	indices = np.random.choice(range(len(df_train.index)), n_training_samples,
 		replace = False)
 
-	X_array = np.array([df.ix[ind].values.reshape([28,28,1]) for ind in indices])
+	X_array = np.array([df_train.ix[ind].values.reshape([28,28,1]) for ind in indices])
 		
 	y_targets_array = np.array([df_labels.ix[ind] for ind in indices])
 	
 	return np.array(X_array), np.array(y_targets_array)
+
 
 def get_validation_data(number_of_samples):
 	df = pd.read_csv("fashion-mnist_train4.csv")
