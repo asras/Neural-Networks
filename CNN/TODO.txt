@@ -6,6 +6,7 @@ Experiment with hyperparameters:
 Try using the architectures on MNIST data 
 	- Are the archs bad or is the problem just harder than
 		regular MNIST?
+Leaky ReLu
 Try using the same archs but with Adam
 Submit to Kaggle?? Dont even know if competition is still running.
 
