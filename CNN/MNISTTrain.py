@@ -3,6 +3,8 @@ import numpy as np
 import tensorflow as tf
 from CNN import CNN
 from CNN1 import CNN1
+from CNN2 import CNN2
+from CNN3 import import CNN3
 import sys
 import time
 from tensorflow.examples.tutorials.mnist import input_data
@@ -35,6 +37,10 @@ t1 = time.time()
 #aCNN = ""
 if (len(sys.argv) > 1 and sys.argv[1].lower() == "cnn1"):
 	aCNN = CNN1(sess=sess, save_path = "./model/mnistmodel1.ckpt")
+elif (len(sys.argv) > 1 and sys.argv[1].lower() == "cnn2"):
+	aCNN = CNN2(sess=sess, save_path = "./model/mnistmodel2.ckpt")
+elif (len(sys.argv) > 1 and sys.argv[1].lower() == "cnn2"):
+	aCNN = CNN3(sess=sess, save_path = "./model/mnistmodel3.ckpt")
 else:
 	aCNN = CNN(sess=sess, save_path = "./model/mnistmodel.ckpt")
 t2 = time.time()
