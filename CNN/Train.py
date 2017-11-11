@@ -3,6 +3,9 @@ import numpy as np
 import tensorflow as tf
 from CNN import CNN
 from CNN1 import CNN1
+from CNN2 import CNN2
+from CNN3 import CNN3
+from CNN4 import CNN4
 import sys
 import time
 ##TODO This really needs cleanup
@@ -65,6 +68,12 @@ t1 = time.time()
 #aCNN = ""
 if (sys.argv[1].lower() == "cnn1"):
 	aCNN = CNN1(sess=sess)
+elif (sys.argv[1].lower() == "cnn2"):
+	aCNN = CNN2(sess=sess)
+elif (sys.argv[1].lower() == "cnn3"):
+	aCNN = CNN3(sess=sess)
+elif (sys.argv[1].lower() == "cnn4"):
+	aCNN = CNN4(sess=sess)
 else:
 	aCNN = CNN(sess=sess)
 t2 = time.time()
