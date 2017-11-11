@@ -20,6 +20,8 @@ class CNN2:
 		self._get_model(sess)
 		self._build_loss()
 		self._build_train_op()
+		if self._init_later:
+			self._init_model(sess)
 
 
 
@@ -29,8 +31,9 @@ class CNN2:
 		#checking for saved parameters.
 		if os.path.exists(self.save_path + ".meta"):
 			self._restore_model(sess)
+			self._init_later = False
 		else:
-			self._init_model(sess)
+			self._init_later = True
 		
 
 	def _restore_model(self, sess):
