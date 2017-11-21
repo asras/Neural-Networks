@@ -3,25 +3,38 @@ import numpy as np
 import tensorflow as tf
 from CNN import CNN
 from CNN1 import CNN1
+from CNN2 import CNN2
+from CNN3 import CNN3
+from CNN4 import CNN4
 import sys
 import time
 ##TODO This really needs cleanup
-def get_train_data(number_of_samples):
-	set_to_use = np.random.randint(4)
+df_train = pd.read_csv("fashion-mnist_train{}.csv".format(0))
+for j in range(1,4):
+	df_temp = pd.read_csv("fashion-mnist_train{}.csv".format(j))
+	df_temp["Unnamed: 0"] += 1*j
+	df_train = df_train.append(df_temp)
+df_train.set_index(["Unnamed: 0"], 1, inplace=True)
+df_labels = df_train["label"]
+df_train.drop(["label"], 1, inplace=True)
 
-	df = pd.read_csv("fashion-mnist_train{}.csv".format(set_to_use))
-	df.drop(["Unnamed: 0"], 1, inplace = True)
-	df_labels = df["label"]
-	df.drop(["label"], 1, inplace=True)
-	n_training_samples = np.min([len(df.index), number_of_samples])
-	indices = np.random.choice(range(len(df.index)), n_training_samples,
+def get_train_data(number_of_samples):
+	# set_to_use = np.random.randint(4)
+
+	# df = pd.read_csv("fashion-mnist_train{}.csv".format(set_to_use))
+	# df.drop(["Unnamed: 0"], 1, inplace = True)
+	# df_labels = df["label"]
+	# df.drop(["label"], 1, inplace=True)
+	n_training_samples = np.min([len(df_train.index), number_of_samples])
+	indices = np.random.choice(range(len(df_train.index)), n_training_samples,
 		replace = False)
 
-	X_array = np.array([df.ix[ind].values.reshape([28,28,1]) for ind in indices])
+	X_array = np.array([df_train.ix[ind].values.reshape([28,28,1]) for ind in indices])
 		
 	y_targets_array = np.array([df_labels.ix[ind] for ind in indices])
 	
 	return np.array(X_array), np.array(y_targets_array)
+
 
 def get_validation_data(number_of_samples):
 	df = pd.read_csv("fashion-mnist_train4.csv")
@@ -65,6 +78,12 @@ t1 = time.time()
 #aCNN = ""
 if (sys.argv[1].lower() == "cnn1"):
 	aCNN = CNN1(sess=sess)
+elif (sys.argv[1].lower() == "cnn2"):
+	aCNN = CNN2(sess=sess)
+elif (sys.argv[1].lower() == "cnn3"):
+	aCNN = CNN3(sess=sess)
+elif (sys.argv[1].lower() == "cnn4"):
+	aCNN = CNN4(sess=sess)
 else:
 	aCNN = CNN(sess=sess)
 t2 = time.time()
